@@ -13,17 +13,17 @@ class TicTacToe:
         self.computer_wins = 0
         self.draws = 0
 
-        # Создание меню для выбора уровня сложности
+        # Frame for difficulty level buttons
         self.difficulty = tk.StringVar(value="Легкий")
-        menu = tk.Menu(self.root)
-        self.root.config(menu=menu)
-        difficulty_menu = tk.Menu(menu, tearoff=0)
-        menu.add_cascade(label="Сложность", menu=difficulty_menu)
-        difficulty_menu.add_radiobutton(label="Легкий", variable=self.difficulty, value="Легкий")
-        difficulty_menu.add_radiobutton(label="Средний", variable=self.difficulty, value="Средний")
-        difficulty_menu.add_radiobutton(label="Сложный", variable=self.difficulty, value="Сложный")
+        difficulty_frame = tk.Frame(self.root)
+        difficulty_frame.grid(row=0, column=0, columnspan=3, pady=10)
 
-        # Показ счетчиков побед/поражений
+        tk.Label(difficulty_frame, text="Уровень сложности:", font=('Arial', 12)).pack(side=tk.LEFT)
+        tk.Radiobutton(difficulty_frame, text="Легкий", variable=self.difficulty, value="Легкий").pack(side=tk.LEFT)
+        tk.Radiobutton(difficulty_frame, text="Средний", variable=self.difficulty, value="Средний").pack(side=tk.LEFT)
+        tk.Radiobutton(difficulty_frame, text="Сложный", variable=self.difficulty, value="Сложный").pack(side=tk.LEFT)
+
+        # Status label to show score
         self.status_label = tk.Label(self.root, text="Игрок: 0 | Компьютер: 0 | Ничья: 0", font=('Arial', 15))
         self.status_label.grid(row=4, column=0, columnspan=3)
 
@@ -34,7 +34,7 @@ class TicTacToe:
             for col in range(3):
                 button = tk.Button(self.root, text=' ', font=('Arial', 40), width=5, height=2,
                                    command=lambda row=row, col=col: self.player_move(row, col))
-                button.grid(row=row, column=col)
+                button.grid(row=row + 1, column=col)  # Offset by 1 row to fit the difficulty frame at the top
                 self.buttons[row][col] = button
 
     def player_move(self, row, col):
@@ -93,7 +93,7 @@ class TicTacToe:
         return self.try_to_win(player)
 
     def check_winner(self, player):
-        # Проверка строк, столбцов и диагоналей
+        # Check rows, columns, and diagonals
         for row in self.board:
             if all([cell == player for cell in row]):
                 return True
@@ -107,7 +107,7 @@ class TicTacToe:
         return False
 
     def highlight_winner(self, player):
-        # Подсветка победных крестиков красным цветом
+        # Highlight winning cells in red
         for row in range(3):
             if all([self.board[row][col] == player for col in range(3)]):
                 for col in range(3):
@@ -133,7 +133,7 @@ class TicTacToe:
 
     def end_game(self, message, result):
         result_label = tk.Label(self.root, text=message, font=('Arial', 20))
-        result_label.grid(row=3, column=0, columnspan=3)
+        result_label.grid(row=5, column=0, columnspan=3)
 
         if result == "player":
             self.player_wins += 1
